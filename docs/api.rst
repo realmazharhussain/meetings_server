@@ -56,7 +56,16 @@ Get a list of all available rooms.
         "name": "Brainstorm Room",
         "capacity": 4,
         "amenities": ["Whiteboard", "TV", "HDMI Cable"],
-        "image": "/placeholder.svg?height=300&width=500"
+        "image": "/placeholder.svg?height=300&width=500",
+        "bookings": [
+          {
+            "id": "1",
+            "date": "2024-03-20",
+            "timeSlot": "09:00-10:00",
+            "userName": "John Doe",
+            "purpose": "Team Meeting"
+          }
+        ]
       }
     ]
 
@@ -79,13 +88,47 @@ Get details of a specific room.
       "name": "Brainstorm Room",
       "capacity": 4,
       "amenities": ["Whiteboard", "TV", "HDMI Cable"],
-      "image": "/placeholder.svg?height=300&width=500"
+      "image": "/placeholder.svg?height=300&width=500",
+      "bookings": [
+        {
+          "id": "1",
+          "date": "2024-03-20",
+          "timeSlot": "09:00-10:00",
+          "userName": "John Doe",
+          "purpose": "Team Meeting"
+        }
+      ]
     }
 
 **Status Codes**:
 
 * ``200``: Success
 * ``404``: Room not found
+
+Static Assets
+------------
+
+GET /placeholder.svg
+~~~~~~~~~~~~~~~~~~
+Get a placeholder SVG image.
+
+**Query Parameters**:
+
+* ``width`` (optional): Image width in pixels (default: 500)
+* ``height`` (optional): Image height in pixels (default: 300)
+
+**Response**:
+An SVG image with the specified dimensions.
+
+**Example URLs**:
+
+* ``/placeholder.svg`` - Default size (500x300)
+* ``/placeholder.svg?width=800&height=600`` - Custom size
+
+**Status Codes**:
+
+* ``200``: Success
+* ``400``: Invalid dimensions
 
 Booking Endpoints
 ---------------

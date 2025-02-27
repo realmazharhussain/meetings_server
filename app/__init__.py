@@ -10,11 +10,12 @@ def create_app():
 
     db.init_app(app)
 
-    from app.routes import auth, rooms, bookings, docs
+    from app.routes import auth, rooms, bookings, docs, static
     app.register_blueprint(auth.bp)
     app.register_blueprint(rooms.bp)
     app.register_blueprint(bookings.bp)
     app.register_blueprint(docs.bp)
+    app.register_blueprint(static.bp)
 
     @app.route('/')
     def home():

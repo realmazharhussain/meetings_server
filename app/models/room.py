@@ -6,3 +6,4 @@ class Room(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     amenities = db.Column(db.String(500), nullable=False)
     image = db.Column(db.String(200), nullable=False)
+    bookings = db.relationship('Booking', backref='room', lazy=True)
