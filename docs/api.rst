@@ -20,7 +20,7 @@ Authentication Endpoints
 
 POST /login
 ~~~~~~~~~~
-Authenticate a user and get a token.
+Authenticate or register a user and get a token. If the email exists, it will attempt to login; if not, it will create a new user.
 
 **Request Body**::
 
@@ -37,32 +37,9 @@ Authenticate a user and get a token.
 
 **Status Codes**:
 
-* ``200``: Success
+* ``200``: Success (both for login and registration)
 * ``400``: Invalid request format
-* ``401``: Invalid credentials
-
-POST /register
-~~~~~~~~~~~~~
-Register a new user.
-
-**Request Body**::
-
-    {
-      "email": "newuser@example.com",
-      "password": "newpassword123"
-    }
-
-**Response**::
-
-    {
-      "userID": "token_string_here"
-    }
-
-**Status Codes**:
-
-* ``201``: User created successfully
-* ``400``: Invalid request format
-* ``409``: Email already registered
+* ``401``: Invalid password for existing email
 
 Room Endpoints
 -------------
