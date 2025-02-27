@@ -18,11 +18,6 @@ def validate_and_create_booking(data: Dict) -> Union[Dict, tuple]:
     if not room:
         return {'error': f'Room {data["roomId"]} not found'}, 404
     
-    # Validate user exists
-    user = User.query.filter_by(email=data['userName']).first()
-    if not user:
-        return {'error': f'User {data["userName"]} not found'}, 404
-    
     # Check if timeslot is already booked
     existing_booking = Booking.query.filter_by(
         room_id=data['roomId'],
@@ -38,8 +33,8 @@ def validate_and_create_booking(data: Dict) -> Union[Dict, tuple]:
         room_id=data['roomId'],
         date=data['date'],
         time_slot=data['timeSlot'],
-        user_id=user.id,
-        user_name=data['userName'],  # Store the display name
+        user_id=request.token.user_id,  # Set from authenticated user
+        user_name=data['userName'],     # Can be any display name
         purpose=data['purpose']
     )
     
@@ -81,14 +76,6 @@ def create_booking():
         return jsonify({'error': 'Content-Type must be application/json'}), 400
     
     data = request.get_json()
-    
-    # Ensure booking is for authenticated user
-    if isinstance(data, dict):
-        if data.get('userName') != request.token.user.email:
-            return jsonify({'error': 'Cannot create bookings for other users'}), 403
-    elif isinstance(data, list):
-        if any(booking.get('userName') != request.token.user.email for booking in data):
-            return jsonify({'error': 'Cannot create bookings for other users'}), 403
     
     # Handle single booking
     if isinstance(data, dict):

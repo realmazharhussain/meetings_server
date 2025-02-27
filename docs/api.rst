@@ -129,7 +129,7 @@ Get a list of bookings with optional filters.
 
 POST /bookings
 ~~~~~~~~~~~~~
-Create one or multiple bookings.
+Create one or multiple bookings. The booking will be associated with the authenticated user, but can have any display name.
 
 **Request Body**
 
@@ -139,7 +139,7 @@ Single booking::
       "roomId": "1",
       "date": "2024-03-20",
       "timeSlot": "09:00-10:00",
-      "userName": "John Doe",
+      "userName": "John Doe",  // Display name, can be any string
       "purpose": "Team Meeting"
     }
 
@@ -162,68 +162,18 @@ Multiple bookings::
       }
     ]
 
-**Response**
-
-Single booking success::
-
-    {
-      "id": "1",
-      "roomId": "1",
-      "date": "2024-03-20",
-      "timeSlot": "09:00-10:00",
-      "userName": "John Doe",
-      "purpose": "Team Meeting"
-    }
-
-Multiple bookings success::
-
-    [
-      {
-        "id": "1",
-        "roomId": "1",
-        "date": "2024-03-20",
-        "timeSlot": "09:00-10:00",
-        "userName": "John Doe",
-        "purpose": "Team Meeting"
-      },
-      {
-        "id": "2",
-        "roomId": "2",
-        "date": "2024-03-20",
-        "timeSlot": "10:00-11:00",
-        "userName": "Jane Smith",
-        "purpose": "Client Call"
-      }
-    ]
-
-Error response::
-
-    {
-      "error": "Some bookings could not be created",
-      "details": [
-        {
-          "booking": {
-            "roomId": "1",
-            "date": "2024-03-20",
-            "timeSlot": "09:00-10:00",
-            "userName": "John Doe",
-            "purpose": "Team Meeting"
-          },
-          "error": "Time slot already booked"
-        }
-      ]
-    }
-
 **Status Codes**:
 
 * ``201``: Booking(s) created successfully
 * ``400``: Invalid request format or validation error
+* ``401``: Authentication required
+* ``403``: Access denied
 * ``404``: Room not found
 * ``409``: Time slot already booked
 
 GET /bookings/{id}
 ~~~~~~~~~~~~~~~~~
-Get details of a specific booking.
+Get details of a specific booking. Users can only access their own bookings.
 
 **Parameters**:
 
@@ -243,11 +193,13 @@ Get details of a specific booking.
 **Status Codes**:
 
 * ``200``: Success
+* ``401``: Authentication required
+* ``403``: Access denied (not owner of booking)
 * ``404``: Booking not found
 
 DELETE /bookings/{id}
 ~~~~~~~~~~~~~~~~~~~~
-Delete a specific booking.
+Delete a specific booking. Users can only delete their own bookings.
 
 **Parameters**:
 
@@ -258,6 +210,8 @@ Delete a specific booking.
 **Status Codes**:
 
 * ``204``: Booking successfully deleted
+* ``401``: Authentication required
+* ``403``: Access denied (not owner of booking)
 * ``404``: Booking not found
 
 Data Formats
