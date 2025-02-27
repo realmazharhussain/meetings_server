@@ -11,16 +11,21 @@ All endpoints are relative to the base URL of your server.
 
 Authentication
 -------------
-Currently, the API uses token-based authentication. Include the token in the ``Authorization`` header::
+The API uses cookie-based authentication. A secure HTTP-only cookie named ``session_token`` is set upon successful login.
+All endpoints (except /login) require this cookie to be present and valid.
 
-    Authorization: Bearer <token>
+**Error Responses**:
+
+* ``401``: Authentication required (missing or invalid token)
+* ``403``: Access denied (attempting to access/modify other users' data)
 
 Authentication Endpoints
 ----------------------
 
 POST /login
 ~~~~~~~~~~
-Authenticate or register a user and get a token. If the email exists, it will attempt to login; if not, it will create a new user.
+Authenticate or register a user. If the email exists, it will attempt to login; if not, it will create a new user.
+On success, sets a secure HTTP-only cookie with the session token.
 
 **Request Body**::
 
@@ -32,8 +37,12 @@ Authenticate or register a user and get a token. If the email exists, it will at
 **Response**::
 
     {
-      "userID": "token_string_here"
+      "message": "Login successful"
     }
+
+**Cookies Set**:
+
+* ``session_token``: Secure, HTTP-only session token
 
 **Status Codes**:
 
@@ -92,13 +101,13 @@ Booking Endpoints
 
 GET /bookings
 ~~~~~~~~~~~~
-Get a list of all bookings with optional filters.
+Get a list of bookings with optional filters.
 
 **Query Parameters**:
 
 * ``roomId`` (optional): Filter bookings by room ID
 * ``date`` (optional): Filter bookings by date (YYYY-MM-DD format)
-* ``user`` (optional): Filter bookings by user email
+* ``mine`` (optional): When set to "true", only returns bookings for the authenticated user
 
 **Response**::
 
@@ -116,6 +125,7 @@ Get a list of all bookings with optional filters.
 **Status Codes**:
 
 * ``200``: Success
+* ``401``: Authentication required
 
 POST /bookings
 ~~~~~~~~~~~~~

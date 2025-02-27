@@ -1,7 +1,9 @@
 from flask import Blueprint, jsonify, request
-from app.models import Booking, Room, User
+from app.models import Booking, Room, User, Token
 from app import db
+from app.auth import require_auth
 from typing import List, Dict, Union
+from sqlalchemy import select
 
 bp = Blueprint('bookings', __name__)
 
@@ -15,6 +17,11 @@ def validate_and_create_booking(data: Dict) -> Union[Dict, tuple]:
     room = Room.query.get(data['roomId'])
     if not room:
         return {'error': f'Room {data["roomId"]} not found'}, 404
+    
+    # Validate user exists
+    user = User.query.filter_by(email=data['userName']).first()
+    if not user:
+        return {'error': f'User {data["userName"]} not found'}, 404
     
     # Check if timeslot is already booked
     existing_booking = Booking.query.filter_by(
@@ -31,18 +38,20 @@ def validate_and_create_booking(data: Dict) -> Union[Dict, tuple]:
         room_id=data['roomId'],
         date=data['date'],
         time_slot=data['timeSlot'],
-        user_name=data['userName'],
+        user_id=user.id,
+        user_name=data['userName'],  # Store the display name
         purpose=data['purpose']
     )
     
     return new_booking
 
 @bp.route('/bookings', methods=['GET'])
+@require_auth
 def get_bookings():
     # Get query parameters
     room_id = request.args.get('roomId')
     date = request.args.get('date')
-    user_email = request.args.get('user')
+    mine = request.args.get('mine', 'false').lower() == 'true'
     
     # Start with base query
     query = Booking.query
@@ -52,12 +61,8 @@ def get_bookings():
         query = query.filter_by(room_id=room_id)
     if date:
         query = query.filter_by(date=date)
-    if user_email:
-        user = User.query.filter_by(email=user_email).first()
-        if user:
-            query = query.filter_by(user_id=user.id)
-        else:
-            return jsonify([])  # Return empty list if user not found
+    if mine:
+        query = query.filter_by(user_id=request.token.user_id)
     
     bookings = query.all()
     return jsonify([{
@@ -70,11 +75,20 @@ def get_bookings():
     } for booking in bookings]), 200
 
 @bp.route('/bookings', methods=['POST'])
+@require_auth
 def create_booking():
     if not request.is_json:
         return jsonify({'error': 'Content-Type must be application/json'}), 400
     
     data = request.get_json()
+    
+    # Ensure booking is for authenticated user
+    if isinstance(data, dict):
+        if data.get('userName') != request.token.user.email:
+            return jsonify({'error': 'Cannot create bookings for other users'}), 403
+    elif isinstance(data, list):
+        if any(booking.get('userName') != request.token.user.email for booking in data):
+            return jsonify({'error': 'Cannot create bookings for other users'}), 403
     
     # Handle single booking
     if isinstance(data, dict):
@@ -138,8 +152,14 @@ def create_booking():
         return jsonify({'error': 'Invalid request format'}), 400
 
 @bp.route('/bookings/<id>', methods=['GET'])
+@require_auth
 def get_booking(id):
     booking = Booking.query.get_or_404(id)
+    
+    # Verify user owns this booking
+    if booking.user_id != request.token.user_id:
+        return jsonify({'error': 'Access denied'}), 403
+    
     return jsonify({
         'id': str(booking.id),
         'roomId': str(booking.room_id),
@@ -150,8 +170,14 @@ def get_booking(id):
     }), 200
 
 @bp.route('/bookings/<id>', methods=['DELETE'])
+@require_auth
 def delete_booking(id):
     booking = Booking.query.get_or_404(id)
+    
+    # Verify user owns this booking
+    if booking.user_id != request.token.user_id:
+        return jsonify({'error': 'Access denied'}), 403
+    
     db.session.delete(booking)
     db.session.commit()
     return '', 204 
