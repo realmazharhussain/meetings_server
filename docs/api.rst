@@ -109,7 +109,7 @@ Static Assets
 ------------
 
 GET /placeholder.svg
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 Get a placeholder SVG image.
 
 **Query Parameters**:
@@ -131,7 +131,7 @@ An SVG image with the specified dimensions.
 * ``400``: Invalid dimensions
 
 Booking Endpoints
----------------
+----------------
 
 GET /bookings
 ~~~~~~~~~~~~
@@ -304,7 +304,7 @@ Time Slot Format
 Time slots should be provided in ``HH:MM-HH:MM`` format (e.g., "09:00-10:00")
 
 Room ID Format
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 Room IDs are strings containing numeric values (e.g., "1", "2")
 
 Booking ID Format
@@ -312,7 +312,7 @@ Booking ID Format
 Booking IDs are strings containing numeric values (e.g., "1", "2")
 
 Error Responses
--------------
+--------------
 All error responses follow this format::
 
     {
