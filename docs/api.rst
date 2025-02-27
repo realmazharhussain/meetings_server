@@ -56,7 +56,7 @@ Get a list of all available rooms.
         "name": "Brainstorm Room",
         "capacity": 4,
         "amenities": ["Whiteboard", "TV", "HDMI Cable"],
-        "image": "/placeholder.svg?height=300&width=500",
+        "image": "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&h=300&auto=format&fit=crop&q=80",
         "bookings": [
           {
             "id": "1",
@@ -105,31 +105,6 @@ Get details of a specific room.
 * ``200``: Success
 * ``404``: Room not found
 
-Static Assets
-------------
-
-GET /placeholder.svg
-~~~~~~~~~~~~~~~~~~~
-Get a placeholder SVG image.
-
-**Query Parameters**:
-
-* ``width`` (optional): Image width in pixels (default: 500)
-* ``height`` (optional): Image height in pixels (default: 300)
-
-**Response**:
-An SVG image with the specified dimensions.
-
-**Example URLs**:
-
-* ``/placeholder.svg`` - Default size (500x300)
-* ``/placeholder.svg?width=800&height=600`` - Custom size
-
-**Status Codes**:
-
-* ``200``: Success
-* ``400``: Invalid dimensions
-
 Booking Endpoints
 ----------------
 
@@ -141,6 +116,7 @@ Get a list of all bookings with optional filters.
 
 * ``roomId`` (optional): Filter bookings by room ID
 * ``date`` (optional): Filter bookings by date (YYYY-MM-DD format)
+* ``user`` (optional): Filter bookings by user email
 
 **Response**::
 

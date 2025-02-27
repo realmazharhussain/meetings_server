@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import Booking, Room
+from app.models import Booking, Room, User
 from app import db
 from typing import List, Dict, Union
 
@@ -42,18 +42,24 @@ def get_bookings():
     # Get query parameters
     room_id = request.args.get('roomId')
     date = request.args.get('date')
+    user_email = request.args.get('user')
     
     # Start with base query
     query = Booking.query
     
     # Apply filters if provided
     if room_id:
-        query = query.filter(Booking.room_id == room_id)
+        query = query.filter_by(room_id=room_id)
     if date:
-        query = query.filter(Booking.date == date)
+        query = query.filter_by(date=date)
+    if user_email:
+        user = User.query.filter_by(email=user_email).first()
+        if user:
+            query = query.filter_by(user_id=user.id)
+        else:
+            return jsonify([])  # Return empty list if user not found
     
     bookings = query.all()
-    
     return jsonify([{
         'id': str(booking.id),
         'roomId': str(booking.room_id),

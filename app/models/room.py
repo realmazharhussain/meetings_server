@@ -7,3 +7,9 @@ class Room(db.Model):
     amenities = db.Column(db.String(500), nullable=False)
     image = db.Column(db.String(200), nullable=False)
     bookings = db.relationship('Booking', backref='room', lazy=True)
+
+    def __init__(self, name, capacity, amenities, image):
+        self.name = name
+        self.capacity = capacity
+        self.amenities = amenities
+        self.image = image
