@@ -9,14 +9,7 @@ def serialize_room(room):
         "name": room.name,
         "capacity": room.capacity,
         "amenities": room.amenities.split(","),
-        "image": room.image,
-        "bookings": [{
-            'id': str(booking.id),
-            'date': booking.date,
-            'timeSlot': booking.time_slot,
-            'userName': booking.user_name,
-            'purpose': booking.purpose
-        } for booking in room.bookings]
+        "image": room.image
     }
 
 @bp.route('/rooms', methods=['GET'])

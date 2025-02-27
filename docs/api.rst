@@ -56,16 +56,7 @@ Get a list of all available rooms.
         "name": "Brainstorm Room",
         "capacity": 4,
         "amenities": ["Whiteboard", "TV", "HDMI Cable"],
-        "image": "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&h=300&auto=format&fit=crop&q=80",
-        "bookings": [
-          {
-            "id": "1",
-            "date": "2024-03-20",
-            "timeSlot": "09:00-10:00",
-            "userName": "John Doe",
-            "purpose": "Team Meeting"
-          }
-        ]
+        "image": "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&h=300&auto=format&fit=crop&q=80"
       }
     ]
 
@@ -88,16 +79,7 @@ Get details of a specific room.
       "name": "Brainstorm Room",
       "capacity": 4,
       "amenities": ["Whiteboard", "TV", "HDMI Cable"],
-      "image": "/placeholder.svg?height=300&width=500",
-      "bookings": [
-        {
-          "id": "1",
-          "date": "2024-03-20",
-          "timeSlot": "09:00-10:00",
-          "userName": "John Doe",
-          "purpose": "Team Meeting"
-        }
-      ]
+      "image": "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&h=300&auto=format&fit=crop&q=80"
     }
 
 **Status Codes**:
